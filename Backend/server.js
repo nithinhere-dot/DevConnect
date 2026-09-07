@@ -1,19 +1,9 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const mongoose = require('mongoose');
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('MongoDB connection error:', err));
-
-app.get('/', (req, res) => {
-  res.send('DevConnect API is running');
-});
+const { app, connectDB } = require('./app');
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  })
+  .catch((err) => console.error('MongoDB connection error:', err));
