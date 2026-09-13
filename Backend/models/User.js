@@ -9,7 +9,17 @@ const userSchema=new mongoose.Schema({
     }
     ,username:{
         type:String,
+        unique:true,
         required:true,
+        maxlength:20,
+    }
+    ,githubUsername:{
+        type:String,
+        unique:true,
+        maxlength:20,
+    }
+    ,gitUrl:{
+        type:String,
         unique:true,
         maxlength:20,
     },
