@@ -87,6 +87,13 @@ exports.getProfile=async (req,res)=>{
         if(!user){
             return res.status(404).json({message:'User not found'});
         }
+        if(user.githubUsername){
+            try{
+                const response = await axios.post('https://api.github.com/graphql',{ query: "...", variables: {} },{ headers: { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } });
+            }catch(err){
+                user.gitUrl=null;
+            }
+        }
         res.json({user});
     }catch(err){
         return res.status(500).json({message:'Server Error'})
@@ -104,7 +111,9 @@ exports.updateProfile=async (req,res)=>{
             return res.status(400).json({message:'Username already taken'});
         }else{
             await User.findByIdAndUpdate(userId,{username:userName});
+            return res.json({message:'Profile Updated Successfully'})
         }
+
 
     }
     if(githubUsername){
