@@ -19,5 +19,8 @@ app.get('/',(req,res)=>{
 const authRoutes=require('./routes/authRoutes');
 app.use('/api/auth',authRoutes);
 
+const postRoutes=require('./routes/postRoutes');
+app.use('/api/posts',postRoutes);
+
 const PORT=process.env.PORT || 3000;
 app.listen(PORT,()=>console.log(`server running on port ${PORT}`));
