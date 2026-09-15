@@ -89,12 +89,32 @@ exports.getProfile=async (req,res)=>{
         }
         if(user.githubUsername){
             try{
-                const response = await axios.post('https://api.github.com/graphql',{ query: "...", variables: {} },{ headers: { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } });
+                const response = await axios.post('https://api.github.com/graphql',{ query: `
+query($username: String!) {
+    user(login: $username) {
+      contributionsCollection {
+        contributionCalendar {
+          totalContributions
+          weeks {
+            contributionDays {
+              contributionCount
+              date
+            }
+          }
+        }
+      }
+    }
+  }
+`,
+    variables: {
+    username: user.githubUsername} 
+    },{ headers: { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } });
             }catch(err){
-                user.gitUrl=null;
+                return res.status(400).json({message:'Invalid Github Username'});
             }
         }
-        res.json({user});
+        return res.json({user,contributions:response.data.data.user.contributionsCollection.contributionCalendar});
+
     }catch(err){
         return res.status(500).json({message:'Server Error'})
     }
